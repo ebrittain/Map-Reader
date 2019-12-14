@@ -1,0 +1,60 @@
+QPushButton {
+    background-color: rgb(41, 194, 49);
+    border: 1px solid rgba(0, 0, 0, 0.233);
+    border-radius: 2px;
+    color: rgb(255, 255, 255);
+    padding: 7px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  
+  QPushButton:disabled {
+    background-color: rgb(182, 182, 182);
+    color: rgb(68, 68, 68);
+  }
+  
+  QPushButton:hover {
+    background-color: rgb(18, 161, 26);
+  }
+
+  QPushButton:pressed {
+    background-color: rgb(1, 121, 7);
+  }
+
+  QLineEdit {
+        background-color:rgb(255, 255, 255);
+        border: 1px solid rgb(109, 109, 109);
+        border-radius: 2px;
+        padding: 7px;
+        font-size: 15px;
+  }
+
+  QLineEdit:focus{ 
+    background-color:rgb(255, 255, 255);
+}
+
+QLineEdit:empty{ 
+  background-color:rgb(255, 217, 217);
+  border: 3px solid rgb(255, 55, 55);
+}
+
+QLabel{
+    color: rgb(68, 68, 68);
+    font-size: 15px;
+}
+QTreeView {
+    alternate-background-color: rgba(224, 255, 225, 0.555);
+    color: rgb(0, 0, 0);
+  }
+  
+  QTreeView::item:selected:active{
+    background-color: rgba(0, 190, 0, 0.555);
+  }
+
+QDialog{
+  background-image: url('./Resources/app_bg_green.png');
+}
+
+QMainWindow{
+  background-image: url('./Resources/app_bg_green.png');
+}

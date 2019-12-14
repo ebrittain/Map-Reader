@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+        <script type="text/javascript">
+            window.onload = function()
+            {
+                
+            }
+        </script>
+    </head>
+</html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+        var map;
+        function contentString(pid, desc, date, lat, lon){
+            if (desc != ''){
+                desc += '</br></br>'
+            }
+            var contentString = '<h4>Point '+pid+'</h4>'+
+                '<h4>('+lat+', '+lon+')</h4>'+
+                '<p>' + desc + '\n' + 'last visited: ' + date + '</p>'
+            return contentString
+        }
+        function refString(lat, lon){
+            var contentString = '<h4>Reference Point</h4>'+
+                '<h4>('+lat+', '+lon+')</h4>'
+            return contentString
+        }
+        function initMap() {
+            var backend = null;
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                backend = channel.objects.backend;
+                    backend.getRef(function(ref) {
+                        backend.getCenter(function(center) {
+                        backend.getPoints(function(points){
+                            map = new google.maps.Map(document.getElementById('map'), {
+                                center: center[0],
+                                zoom: 10
+                            });
+
+                            var markers = [points.length];
+                            var markersInfo = [points.length]
+                            var refMarkers = [ref.length]
+                            var refInfo = [ref.length]
+
+                            for(let i=0; i<ref.length; i++){
+                                refInfo[i] = new google.maps.InfoWindow({
+                                    content: refString(ref[i]['lat'], ref[i]['lng'])
+                                });
+
+                                refMarkers[i] = new google.maps.Marker({
+                                    icon : 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                                    position: ref[i],
+                                    map: map,
+                                    title: 'Reference Point'
+                                });
+
+                                refMarkers[i].addListener('click', function() {
+                                    refInfo[i].open(map, refMarkers[i]);
+                                });
+                            }
+                            
+                            for(let i=0; i<points.length; i++){
+                                var desc = points[i]['Description']
+                                var loc = points[i]['Point']
+                                var date = points[i]['Date']
+
+                                markersInfo[i] = new google.maps.InfoWindow({
+                                    content: contentString(i+1, desc, date, loc['lat'], loc['lng'])
+                                });
+
+                                markers[i] = new google.maps.Marker({
+                                    icon : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                                    position: loc,
+                                    map: map,
+                                    title: desc
+                                });
+
+                                markers[i].addListener('click', function() {
+                                    markersInfo[i].open(map, markers[i]);
+                                });
+                            }
+                        });
+                    });                   
+                });
+            });
+        }
+    </script>
+    <script>
+        function loadScript(){
+            var backend = null;
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                backend = channel.objects.backend;
+                backend.getAPIKey(function(key){
+                    var script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.src = 'https://maps.googleapis.com/maps/api/js?v=3' +
+                    '&key=' + key +'&callback=initMap';
+                    document.body.appendChild(script);
+                });
+            });
+        }   
+        loadScript()
+    </script>
+  </body>
+</html>

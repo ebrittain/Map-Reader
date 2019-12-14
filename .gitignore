@@ -1,0 +1,5 @@
+*/__pycache__/
+*/Tests/__pycache__/
+*/.pytest_cache/
+*/.vscode/
+*/Projects/
